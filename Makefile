@@ -49,6 +49,11 @@ CONTAINER_CMD:=docker run --rm \
 		-e USER=deadbeef \
 		quay.io/coreos/jsonnet-ci
 
+LINUX_PLATFORMS = "linux/amd64,linux/arm64,linux/arm/v7,linux/ppc64le"
+REPOSITORY = cloudx2021
+RELEASE_TAG = v0.35.1
+# DOCKER_IMAGE = $(REPOSITORY)/$(IMAGE_NAME):$(RELEASE_TAG)
+
 .PHONY: all
 all: format generate build test
 
@@ -284,3 +289,17 @@ $(PO_DOCGEN_BINARY): $(shell find cmd/po-docgen -type f) $(TYPES_V1_TARGET)
 
 $(GOJSONTOYAML_BINARY):
 	@go install -mod=vendor github.com/brancz/gojsontoyaml
+
+.PHONY: buildx.operator
+buildx.operator:
+	go mod tidy
+	docker buildx create --use
+	docker buildx build --platform $(LINUX_PLATFORMS) -t $(REPOSITORY)/prometheus-operator:$(RELEASE_TAG) -f cmd/operator/Dockerfile . --push
+
+.PHONY: buildx.config-reloader
+buildx.config-reloader:
+	go mod tidy
+	cd $(PWD)/cmd/prometheus-config-reloader
+	docker buildx create --use
+	docker buildx build --platform $(LINUX_PLATFORMS) -t $(REPOSITORY)/prometheus-config-reloader:$(RELEASE_TAG) -f cmd/prometheus-config-reloader/Dockerfile . --push
+
