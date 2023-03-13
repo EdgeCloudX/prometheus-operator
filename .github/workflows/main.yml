@@ -1,7 +1,7 @@
 name: Build Mixed Arch Image
 
 env:
-  VERSION: v0.63.0
+  VERSION: v0.35.1
 
 on:
   pull_request:
@@ -14,7 +14,7 @@ on:
 jobs:
   prometheus-operator:
     name: Build Prometheus Operator
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU
@@ -33,7 +33,7 @@ jobs:
 
   prometheus-config-reloader:
     name: Build Prometheus Config Reloader
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v2
       - name: Set up QEMU

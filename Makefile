@@ -87,6 +87,12 @@ pkgs = $(shell go list ./... | grep -v /test/ | grep -v /contrib/)
 pkgs += $(shell go list $(GO_PKG)/pkg/apis/monitoring...)
 pkgs += $(shell go list $(GO_PKG)/pkg/client...)
 
+LINUX_PLATFORMS = "linux/amd64",linux/arm64,linux/ppc64le
+REPOSITORY = cloudx2021
+RELEASE_TAG = v0.63.0
+# DOCKER_IMAGE = $(REPOSITORY)/$(IMAGE_NAME):$(RELEASE_TAG)
+
+
 .PHONY: all
 all: format generate build test
 
@@ -385,3 +391,33 @@ $(TOOLS_BIN_DIR)/$(1):
 endef
 
 $(foreach binary,$(K8S_GEN_BINARIES),$(eval $(call _K8S_GEN_VAR_TARGET_,$(binary))))
+
+$(EMBEDMD_BINARY):
+	@go install -mod=vendor github.com/campoy/embedmd
+
+$(JB_BINARY):
+	@go install -mod=vendor github.com/jsonnet-bundler/jsonnet-bundler/cmd/jb
+
+$(CONTROLLER_GEN_BINARY):
+	@go install -mod=vendor sigs.k8s.io/controller-tools/cmd/controller-gen 
+
+$(PO_DOCGEN_BINARY): $(shell find cmd/po-docgen -type f) $(TYPES_V1_TARGET)
+	@go install -mod=vendor $(GO_PKG)/cmd/po-docgen
+
+$(GOJSONTOYAML_BINARY):
+	@go install -mod=vendor github.com/brancz/gojsontoyaml
+
+.PHONY: buildx.operator
+buildx.operator:
+	go mod tidy
+	go mod vendor
+	docker buildx create --use
+	docker buildx build --platform $(LINUX_PLATFORMS) -t $(REPOSITORY)/prometheus-operator:$(RELEASE_TAG) -f cmd/operator/Dockerfile . --push
+
+.PHONY: buildx.config-reloader
+buildx.config-reloader:
+	go mod tidy
+	go mod vendor
+	cd $(PWD)/cmd/prometheus-config-reloader
+	docker buildx create --use
+	docker buildx build --platform $(LINUX_PLATFORMS) -t $(REPOSITORY)/prometheus-config-reloader:$(RELEASE_TAG) -f cmd/prometheus-config-reloader/Dockerfile . --push
