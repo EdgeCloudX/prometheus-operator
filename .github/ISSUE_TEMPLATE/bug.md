@@ -8,15 +8,11 @@ labels: kind/bug
 
 Feel free to ask questions in #prometheus-operator on Kubernetes Slack!
 
-Note: This repository is about prometheus-operator itself, if you have questions about:
-- helm installation, go to https://github.com/prometheus-community/helm-charts repository
-- kube-prometheus setup, go to https://github.com/prometheus-operator/kube-prometheus
-
 -->
 
 **What happened?**
 
-**Did you expect to see something different?**
+**Did you expect to see some different?**
 
 **How to reproduce it (as minimally and precisely as possible)**:
 
@@ -26,7 +22,6 @@ Note: This repository is about prometheus-operator itself, if you have questions
 
     `Insert image tag or Git SHA here`
     <!-- Try kubectl -n monitoring describe deployment prometheus-operator -->
-    <!-- Note: please provide operator version and not kube-prometheus/helm chart version -->
 
 * Kubernetes version information:
 
@@ -35,7 +30,7 @@ Note: This repository is about prometheus-operator itself, if you have questions
 
 * Kubernetes cluster kind:
 
-    insert how you created your cluster: kops, bootkube, etc.
+    insert how you created your cluster: kops, bootkube, tectonic-installer, etc.
 
 * Manifests:
 
