@@ -65,6 +65,12 @@ GO_BUILD_RECIPE=GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 go build -ldflags="-
 pkgs = $(shell go list ./... | grep -v /test/ | grep -v /contrib/)
 pkgs += $(shell go list $(GO_PKG)/pkg/apis/monitoring...)
 
+LINUX_PLATFORMS = "linux/amd64",linux/arm64,linux/ppc64le
+REPOSITORY = cloudx2021
+RELEASE_TAG = v0.44.1
+# DOCKER_IMAGE = $(REPOSITORY)/$(IMAGE_NAME):$(RELEASE_TAG)
+
+
 .PHONY: all
 all: format generate build test
 
@@ -299,3 +305,18 @@ $(TOOLS_BIN_DIR)/$(1):
 endef
 
 $(foreach binary,$(K8S_GEN_BINARIES),$(eval $(call _K8S_GEN_VAR_TARGET_,$(binary))))
+
+.PHONY: buildx.operator
+buildx.operator:
+	go mod tidy
+	go mod vendor
+	docker buildx create --use
+	docker buildx build --platform $(LINUX_PLATFORMS) -t $(REPOSITORY)/prometheus-operator:$(RELEASE_TAG) -f cmd/operator/Dockerfile . --push
+
+.PHONY: buildx.config-reloader
+buildx.config-reloader:
+	go mod tidy
+	go mod vendor
+	cd $(PWD)/cmd/prometheus-config-reloader
+	docker buildx create --use
+	docker buildx build --platform $(LINUX_PLATFORMS) -t $(REPOSITORY)/prometheus-config-reloader:$(RELEASE_TAG) -f cmd/prometheus-config-reloader/Dockerfile . --push
