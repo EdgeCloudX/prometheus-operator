@@ -6,7 +6,10 @@ ARCH:=arm64 amd64 arm ppc64le riscv64 s390x
 PROMETHEUS_COMMON_PKG=github.com/prometheus/common
 GOOS?=linux
 # The ldflags for the go build process to set the version related data.
-package: prometheus-operator prometheus-config-reloader admission-webhook
+package: mod prometheus-operator prometheus-config-reloader admission-webhook
+.PHONY: mod
+mod:
+	go mod tidy
 
 .PHONY: prometheus-operator
 prometheus-operator:
