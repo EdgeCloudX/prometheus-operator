@@ -9,7 +9,7 @@ GOOS?=linux
 package: prometheus-operator prometheus-config-reloader admission-webhook
 
 .PHONY: prometheus-operator
-prometheus-operator: Dockerfile
+prometheus-operator:
 	@CONCATENATED_STRING=;\
 	for arch in $(ARCH); do \
 	    if [ $$arch = "arm64" ]; then \
@@ -31,7 +31,7 @@ prometheus-operator: Dockerfile
 	docker manifest push $(IMAGE_OPERATOR):$(TAG)
 
 .PHONY: prometheus-config-reloader
-prometheus-config-reloader: cmd/prometheus-config-reloader/Dockerfile
+prometheus-config-reloader:
 	@CONCATENATED_STRING=;\
 	for arch in $(ARCH); do \
 		if [ $$arch = "arm64" ]; then \
@@ -53,7 +53,7 @@ prometheus-config-reloader: cmd/prometheus-config-reloader/Dockerfile
 	docker manifest push $(IMAGE_RELOADER):$(TAG)
 
 .PHONY: admission-webhook
-admission-webhook: cmd/admission-webhook/Dockerfile
+admission-webhook:
 	@CONCATENATED_STRING=;\
 	for arch in $(ARCH); do \
 		if [ $$arch = "arm64" ]; then \
