@@ -1,7 +1,7 @@
 ARG ARCH="amd64"
 ARG OS="linux"
 FROM quay.io/prometheus/busybox-${OS}-${ARCH}:latest
-CMD ["ls","-l"]
+RUN ls -l
 COPY operator /bin/operator
 
 # On busybox 'nobody' has uid `65534'
