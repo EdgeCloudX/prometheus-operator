@@ -1,6 +1,6 @@
-IMAGE_OPERATOR?=swr.cn-south-1.myhuaweicloud.com/cloudx/prometheus-operator
-IMAGE_RELOADER?=swr.cn-south-1.myhuaweicloud.com/cloudx/prometheus-config-reloader
-IMAGE_WEBHOOK?=swr.cn-south-1.myhuaweicloud.com/cloudx/admission-webhook
+IMAGE_OPERATOR?=harbor.ctyuncdn.cn/ecf-edge-dev/coreos/prometheus-operator
+IMAGE_RELOADER?=harbor.ctyuncdn.cn/ecf-edge-dev/coreos/prometheus-config-reloader
+IMAGE_WEBHOOK?=harbor.ctyuncdn.cn/ecf-edge-dev/coreos/admission-webhook
 TAG?=v0.62.1
 ARCH:=arm64 amd64 arm ppc64le riscv64 s390x
 PROMETHEUS_COMMON_PKG=github.com/prometheus/common
